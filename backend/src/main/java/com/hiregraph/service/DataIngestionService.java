@@ -4,6 +4,7 @@ import com.hiregraph.dto.response.IngestionResultResponse;
 import com.hiregraph.entity.*;
 import com.hiregraph.exception.IngestionException;
 import com.hiregraph.repository.*;
+import com.hiregraph.util.SkillCatalog;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -22,3 +22,4 @@ UPDATE skills SET skill_name = 'React & Web Development' WHERE skill_id = 'SK_15
 UPDATE skills SET skill_name = 'Python' WHERE skill_id = 'SK_16';
 UPDATE skills SET skill_name = 'System Design & APIs' WHERE skill_id = 'SK_17';
 UPDATE skills SET skill_name = 'Statistics & Excel' WHERE skill_id = 'SK_18';
+

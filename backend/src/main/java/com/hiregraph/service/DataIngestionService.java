@@ -214,10 +214,10 @@ public class DataIngestionService {
                 String dst = getString(row, edgeColIndex.get("target_id"));
 
                 if (src.startsWith("SK_") && !skillsMap.containsKey(src)) {
-                    skillsMap.put(src, new Skill(src, "Skill " + src));
+                    skillsMap.put(src, new Skill(src, SkillCatalog.resolveName(src)));
                 }
                 if (dst.startsWith("SK_") && !skillsMap.containsKey(dst)) {
-                    skillsMap.put(dst, new Skill(dst, "Skill " + dst));
+                    skillsMap.put(dst, new Skill(dst, SkillCatalog.resolveName(dst)));
                 }
 
                 if ("HAS_SKILL".equals(rel)) {

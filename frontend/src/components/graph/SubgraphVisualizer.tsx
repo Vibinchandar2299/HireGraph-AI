@@ -8,12 +8,14 @@ interface SubgraphVisualizerProps {
   data: SubgraphResponse;
   onNavigateToNode?: (type: string, id: string) => void;
   height?: string;
+  showTechnicalLabels?: boolean;
 }
 
 export const SubgraphVisualizer: React.FC<SubgraphVisualizerProps> = ({
   data,
   onNavigateToNode,
   height = '540px',
+  showTechnicalLabels = false,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<Core | null>(null);
@@ -21,6 +23,7 @@ export const SubgraphVisualizer: React.FC<SubgraphVisualizerProps> = ({
 
   useEffect(() => {
     if (!containerRef.current) return;
+    setSelectedNode(null);
 
     // Transform API data to cytoscape elements
     const elements: any[] = [];
@@ -31,7 +34,10 @@ export const SubgraphVisualizer: React.FC<SubgraphVisualizerProps> = ({
         group: 'nodes',
         data: {
           id: n.id,
-          label: n.id,
+          label: showTechnicalLabels ? n.id : (n.label || n.id),
+          displayName: n.displayName || n.id,
+          subtitle: n.subtitle || '',
+          skillMatchStatus: n.skillMatchStatus || '',
           type: n.type.toLowerCase(),
           is_center: n.is_center ? 'true' : 'false',
         },
@@ -46,7 +52,7 @@ export const SubgraphVisualizer: React.FC<SubgraphVisualizerProps> = ({
           id: `edge-${idx}`,
           source: l.source,
           target: l.target,
-          label: l.relation || '',
+          label: showTechnicalLabels ? (l.raw_relation || l.relation || '') : (l.relation || ''),
         },
       });
     });
@@ -62,12 +68,16 @@ export const SubgraphVisualizer: React.FC<SubgraphVisualizerProps> = ({
             label: 'data(label)',
             color: '#f8fafc',
             'font-family': 'Inter, sans-serif',
-            'font-size': '11px',
+            'font-size': '10px',
+            'text-wrap': 'wrap',
+            'text-max-width': '90px',
             'text-valign': 'center',
             'text-halign': 'center',
+            'text-outline-color': '#070b14',
+            'text-outline-width': 2,
             'background-color': '#475569',
-            width: 44,
-            height: 44,
+            width: 52,
+            height: 52,
             'border-width': 2,
             'border-color': '#1e293b',
             'transition-property': 'background-color, border-color, width, height',
@@ -82,12 +92,27 @@ export const SubgraphVisualizer: React.FC<SubgraphVisualizerProps> = ({
           },
         })),
         {
+          selector: 'node[skillMatchStatus = "MATCHED"]',
+          style: {
+            'border-width': 3,
+            'border-color': '#10b981',
+          },
+        },
+        {
+          selector: 'node[skillMatchStatus = "MISSING"]',
+          style: {
+            'border-width': 3,
+            'border-color': '#f59e0b',
+            'border-style': 'dashed',
+          },
+        },
+        {
           selector: 'node[is_center = "true"]',
           style: {
-            width: 60,
-            height: 60,
+            width: 68,
+            height: 68,
             'font-weight': 'bold',
-            'font-size': '13px',
+            'font-size': '12px',
             'border-width': 4,
             'border-color': '#ffffff',
             'border-opacity': 1,
@@ -139,6 +164,10 @@ export const SubgraphVisualizer: React.FC<SubgraphVisualizerProps> = ({
         id: nodeData.id,
         type: nodeData.type,
         is_center: nodeData.is_center === 'true',
+        label: nodeData.label,
+        displayName: nodeData.displayName,
+        subtitle: nodeData.subtitle,
+        skillMatchStatus: nodeData.skillMatchStatus,
       });
     });
 
@@ -153,7 +182,7 @@ export const SubgraphVisualizer: React.FC<SubgraphVisualizerProps> = ({
     return () => {
       cy.destroy();
     };
-  }, [data]);
+  }, [data, showTechnicalLabels]);
 
   const handleZoomIn = () => {
     if (cyRef.current) {
@@ -266,8 +295,16 @@ export const SubgraphVisualizer: React.FC<SubgraphVisualizerProps> = ({
               </span>
             )}
           </div>
-          <div style={{ fontSize: '1.1rem', fontWeight: 700, fontFamily: 'var(--font-mono)', marginTop: '4px' }}>
-            {selectedNode.id}
+          <div style={{ fontSize: '1.05rem', fontWeight: 700, marginTop: '4px', color: 'var(--text-primary)' }}>
+            {selectedNode.displayName || selectedNode.id}
+          </div>
+          {selectedNode.subtitle && (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.4 }}>
+              {selectedNode.subtitle}
+            </div>
+          )}
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '4px' }}>
+            ID: {selectedNode.id}
           </div>
           {onNavigateToNode && selectedNode.type !== 'skill' && (
             <button

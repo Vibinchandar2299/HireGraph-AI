@@ -87,12 +87,15 @@ public class ApiControllerTests {
     void testSkillsListAndDemand() throws Exception {
         mockMvc.perform(get("/api/v1/skills"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(18)));
+                .andExpect(jsonPath("$", hasSize(18)))
+                .andExpect(jsonPath("$[*].skillName", not(hasItem(startsWith("Skill SK_")))))
+                .andExpect(jsonPath("$[?(@.skillId == 'SK_16')].skillName", hasItem("Python")));
 
         mockMvc.perform(get("/api/v1/skills/demand"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(18)))
-                .andExpect(jsonPath("$[0].demandCount", greaterThanOrEqualTo(0)));
+                .andExpect(jsonPath("$[0].demandCount", greaterThanOrEqualTo(0)))
+                .andExpect(jsonPath("$[*].skillName", not(hasItem(startsWith("Skill SK_")))));
     }
 
     @Test
@@ -107,7 +110,16 @@ public class ApiControllerTests {
                 .andExpect(jsonPath("$.studentId", is("S1654")))
                 .andExpect(jsonPath("$.companyId", is("C014")))
                 .andExpect(jsonPath("$.jobId", is("J0263")))
-                .andExpect(jsonPath("$.finalStatus", is(1)));
+                .andExpect(jsonPath("$.finalStatus", is(1)))
+                .andExpect(jsonPath("$.recommendations.readinessLevel", notNullValue()))
+                .andExpect(jsonPath("$.recommendations.summaryHeadline", notNullValue()))
+                .andExpect(jsonPath("$.recommendations.peerBenchmarks", not(empty())));
+
+        mockMvc.perform(get("/api/v1/applications/A00002"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.applicationId", is("A00002")))
+                .andExpect(jsonPath("$.finalStatus", is(0)))
+                .andExpect(jsonPath("$.recommendations.items", not(empty())));
 
         mockMvc.perform(get("/api/v1/applications/NON_EXISTENT_APP"))
                 .andExpect(status().isNotFound())

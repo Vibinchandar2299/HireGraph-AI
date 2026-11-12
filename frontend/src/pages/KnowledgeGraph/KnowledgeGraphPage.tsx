@@ -28,6 +28,7 @@ export const KnowledgeGraphPage: React.FC = () => {
 
   const [selectedType, setSelectedType] = useState<string>(initialType);
   const [selectedId, setSelectedId] = useState<string>(initialId);
+  const [showTechnicalLabels, setShowTechnicalLabels] = useState<boolean>(false);
 
   // Fetch overview on mount
   useEffect(() => {
@@ -173,10 +174,10 @@ export const KnowledgeGraphPage: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: '240px' }}>
-            <label style={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>Entity ID:</label>
+            <label style={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>Entity ID / Name:</label>
             <input
               type="text"
-              placeholder="e.g. A00001, S1654, C014, J0263, Python"
+              placeholder="e.g. A00001, S1654, C014, J0263, Python, SQL & Databases"
               value={selectedId}
               onChange={(e) => setSelectedId(e.target.value)}
               style={{ width: '100%', fontFamily: 'var(--font-mono)' }}
@@ -237,17 +238,69 @@ export const KnowledgeGraphPage: React.FC = () => {
         </div>
       </Card>
 
+      {/* Plain-English Summary Card */}
+      {subgraph?.summary && !loadingSubgraph && !errorSubgraph && (
+        <div
+          className="card"
+          style={{
+            borderLeft: '4px solid var(--color-primary)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+          }}
+        >
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--color-primary)' }}>
+            What This Graph Shows
+          </div>
+          <div style={{ fontSize: '1.02rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+            {subgraph.summary.title}
+          </div>
+          <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
+            {subgraph.summary.description}
+          </p>
+          {subgraph.summary.highlights && subgraph.summary.highlights.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
+              {subgraph.summary.highlights.map((item, idx) => (
+                <span
+                  key={idx}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: 'var(--radius-sm)',
+                    backgroundColor: 'var(--bg-elevated)',
+                    border: '1px solid var(--border-subtle)',
+                    fontSize: '0.78rem',
+                    color: 'var(--text-primary)',
+                  }}
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Interactive Subgraph Canvas */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-          <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>
-            Interactive Subgraph Canvas
-            {subgraph && (
-              <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginLeft: '10px' }}>
-                ({subgraph.nodesCount} nodes, {subgraph.linksCount} relations)
-              </span>
-            )}
-          </h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            <h3 style={{ fontSize: '1.05rem', fontWeight: 600 }}>
+              Interactive Subgraph Canvas
+              {subgraph && (
+                <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginLeft: '10px' }}>
+                  ({subgraph.nodesCount} nodes, {subgraph.linksCount} relations)
+                </span>
+              )}
+            </h3>
+            <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--text-secondary)', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={showTechnicalLabels}
+                onChange={(e) => setShowTechnicalLabels(e.target.checked)}
+              />
+              Show raw technical IDs
+            </label>
+          </div>
           <GraphLegend />
         </div>
 
@@ -265,6 +318,7 @@ export const KnowledgeGraphPage: React.FC = () => {
             data={subgraph}
             onNavigateToNode={handleNavigateToNode}
             height="540px"
+            showTechnicalLabels={showTechnicalLabels}
           />
         ) : null}
       </div>

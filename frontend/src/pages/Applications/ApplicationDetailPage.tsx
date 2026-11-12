@@ -10,6 +10,10 @@ import {
   GraduationCap,
   Clock,
   TrendingUp,
+  AlertTriangle,
+  CheckCircle2,
+  Lightbulb,
+  Target,
 } from 'lucide-react';
 import { applicationApi } from '../../api/applicationApi';
 import { Application } from '../../types/application';
@@ -288,6 +292,308 @@ export const ApplicationDetailPage: React.FC = () => {
           </div>
         )}
       </Card>
+
+      {/* SECTION 2B — PROFILE IMPROVEMENT RECOMMENDATIONS & SKILL GAP ANALYSIS */}
+      {application.recommendations && (
+        (() => {
+          const rec = application.recommendations;
+          const isRejectedPrediction =
+            prediction?.predictedStatus === 'REJECTED' ||
+            (!prediction && application.finalStatus === 0);
+          const accentBorder = isRejectedPrediction
+            ? 'rgba(244, 63, 94, 0.45)'
+            : 'rgba(16, 185, 129, 0.35)';
+
+          return (
+            <Card
+              title={
+                isRejectedPrediction
+                  ? 'Profile Improvement Recommendations (To Get Selected)'
+                  : 'Profile Alignment & Readiness Insights'
+              }
+              subtitle={`${rec.jobTitle} (${rec.jobDomain}) • Skill Match: ${formatDecimal(rec.skillMatchPercent, 1)}%`}
+              action={
+                <span
+                  style={{
+                    padding: '4px 12px',
+                    borderRadius: '999px',
+                    fontSize: '0.76rem',
+                    fontWeight: 700,
+                    backgroundColor:
+                      rec.readinessLevel === 'Needs Attention'
+                        ? 'rgba(244, 63, 94, 0.15)'
+                        : rec.readinessLevel === 'Borderline'
+                        ? 'rgba(245, 158, 11, 0.15)'
+                        : 'rgba(16, 185, 129, 0.15)',
+                    color:
+                      rec.readinessLevel === 'Needs Attention'
+                        ? '#fb7185'
+                        : rec.readinessLevel === 'Borderline'
+                        ? '#fbbf24'
+                        : '#34d399',
+                    border: `1px solid ${accentBorder}`,
+                  }}
+                >
+                  {rec.readinessLevel}
+                </span>
+              }
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '8px' }}>
+                {/* Headline Banner */}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    gap: '12px',
+                    padding: '14px 16px',
+                    borderRadius: 'var(--radius-sm)',
+                    backgroundColor: isRejectedPrediction
+                      ? 'rgba(244, 63, 94, 0.08)'
+                      : 'rgba(56, 189, 248, 0.08)',
+                    border: `1px solid ${accentBorder}`,
+                    fontSize: '0.88rem',
+                    lineHeight: 1.5,
+                    color: 'var(--text-primary)',
+                  }}
+                >
+                  <Lightbulb
+                    size={18}
+                    style={{
+                      color: isRejectedPrediction ? '#fb7185' : 'var(--color-primary)',
+                      flexShrink: 0,
+                      marginTop: '2px',
+                    }}
+                  />
+                  <span>{rec.summaryHeadline}</span>
+                </div>
+
+                {/* Required Skills Match vs Missing */}
+                <div className="grid-cols-2">
+                  <div
+                    style={{
+                      padding: '14px',
+                      borderRadius: 'var(--radius-sm)',
+                      backgroundColor: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-subtle)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        color: '#34d399',
+                        marginBottom: '10px',
+                      }}
+                    >
+                      <CheckCircle2 size={15} />
+                      Matched Required Skills ({rec.matchedSkills.length})
+                    </div>
+                    {rec.matchedSkills.length > 0 ? (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {rec.matchedSkills.map((skill) => (
+                          <span
+                            key={skill}
+                            style={{
+                              padding: '4px 10px',
+                              borderRadius: '999px',
+                              fontSize: '0.78rem',
+                              backgroundColor: 'rgba(16, 185, 129, 0.14)',
+                              border: '1px solid rgba(16, 185, 129, 0.35)',
+                              color: '#a7f3d0',
+                            }}
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                        No direct overlap with required job skills.
+                      </span>
+                    )}
+                  </div>
+
+                  <div
+                    style={{
+                      padding: '14px',
+                      borderRadius: 'var(--radius-sm)',
+                      backgroundColor: 'var(--bg-elevated)',
+                      border: '1px solid var(--border-subtle)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        color: rec.missingSkills.length > 0 ? '#fbbf24' : '#34d399',
+                        marginBottom: '10px',
+                      }}
+                    >
+                      <AlertTriangle size={15} />
+                      Missing Required Skills ({rec.missingSkills.length})
+                    </div>
+                    {rec.missingSkills.length > 0 ? (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {rec.missingSkills.map((skill) => (
+                          <span
+                            key={skill}
+                            style={{
+                              padding: '4px 10px',
+                              borderRadius: '999px',
+                              fontSize: '0.78rem',
+                              backgroundColor: 'rgba(245, 158, 11, 0.14)',
+                              border: '1px solid rgba(245, 158, 11, 0.4)',
+                              color: '#fde68a',
+                            }}
+                          >
+                            + Learn {skill}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span style={{ fontSize: '0.8rem', color: '#a7f3d0' }}>
+                        All required job skills are covered!
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Actionable Improvement Plan */}
+                {rec.items.length > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <div style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Target size={15} /> Actionable Steps to Improve Selection Chances
+                    </div>
+                    {rec.items.map((item, idx) => {
+                      const priorityColor =
+                        item.priority === 'HIGH'
+                          ? '#fb7185'
+                          : item.priority === 'MEDIUM'
+                          ? '#fbbf24'
+                          : '#38bdf8';
+                      const priorityBg =
+                        item.priority === 'HIGH'
+                          ? 'rgba(244, 63, 94, 0.14)'
+                          : item.priority === 'MEDIUM'
+                          ? 'rgba(245, 158, 11, 0.14)'
+                          : 'rgba(56, 189, 248, 0.14)';
+
+                      return (
+                        <div
+                          key={`${item.category}-${idx}`}
+                          style={{
+                            padding: '12px 16px',
+                            borderRadius: 'var(--radius-sm)',
+                            backgroundColor: 'var(--bg-elevated)',
+                            border: '1px solid var(--border-subtle)',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                            gap: '16px',
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <div style={{ flex: 1, minWidth: '240px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                              <span
+                                style={{
+                                  padding: '2px 8px',
+                                  borderRadius: '4px',
+                                  fontSize: '0.7rem',
+                                  fontWeight: 700,
+                                  backgroundColor: priorityBg,
+                                  color: priorityColor,
+                                }}
+                              >
+                                {item.priority} PRIORITY
+                              </span>
+                              <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                                {item.category}
+                              </span>
+                            </div>
+                            <div style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                              {item.title}
+                            </div>
+                            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', margin: '4px 0 0', lineHeight: 1.45 }}>
+                              {item.action}
+                            </p>
+                          </div>
+
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'flex-end',
+                              fontSize: '0.78rem',
+                              fontFamily: 'var(--font-mono)',
+                              gap: '4px',
+                            }}
+                          >
+                            <span style={{ color: 'var(--text-muted)' }}>
+                              Current: <strong style={{ color: 'var(--text-primary)' }}>{item.currentValue}</strong>
+                            </span>
+                            <span style={{ color: '#34d399' }}>
+                              Target: <strong>{item.targetValue}</strong>
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Peer Benchmark Table */}
+                {rec.peerBenchmarks.length > 0 && (
+                  <div>
+                    <div style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '10px' }}>
+                      Comparison vs. Historically Selected Candidates in {rec.jobDomain}
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(175px, 1fr))', gap: '10px' }}>
+                      {rec.peerBenchmarks.map((bm) => {
+                        const onTrack = bm.status === 'ON_TRACK';
+                        return (
+                          <div
+                            key={bm.metric}
+                            style={{
+                              padding: '10px 12px',
+                              borderRadius: 'var(--radius-sm)',
+                              backgroundColor: 'var(--bg-elevated)',
+                              border: '1px solid var(--border-subtle)',
+                            }}
+                          >
+                            <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)' }}>{bm.metric}</div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '4px' }}>
+                              <span
+                                style={{
+                                  fontSize: '1.05rem',
+                                  fontWeight: 700,
+                                  fontFamily: 'var(--font-mono)',
+                                  color: onTrack ? '#34d399' : '#fb7185',
+                                }}
+                              >
+                                {formatDecimal(bm.studentValue, 1)}
+                              </span>
+                              <span style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                                Peer: {formatDecimal(bm.selectedPeerAvg, 1)}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </Card>
+          );
+        })()
+      )}
 
       {/* SECTION 3 — OBSERVABLE DECISION-SUPPORT ATTRIBUTES */}
       <section>

@@ -18,11 +18,14 @@ public class ApplicationService {
 
     private final ApplicationRepository applicationRepository;
     private final PredictionRepository predictionRepository;
+    private final ApplicationRecommendationService recommendationService;
 
     public ApplicationService(ApplicationRepository applicationRepository,
-                              PredictionRepository predictionRepository) {
+                              PredictionRepository predictionRepository,
+                              ApplicationRecommendationService recommendationService) {
         this.applicationRepository = applicationRepository;
         this.predictionRepository = predictionRepository;
+        this.recommendationService = recommendationService;
     }
 
     public Page<ApplicationResponse> getApplications(Integer cycle, Integer finalStatus, Pageable pageable) {
@@ -48,6 +51,8 @@ public class ApplicationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Application with ID '" + applicationId + "' not found."));
 
         Prediction pred = predictionRepository.findTopByApplicationIdOrderByCreatedAtDesc(app.getApplicationId()).orElse(null);
-        return EntityDtoMapper.toApplicationResponse(app, pred);
+        ApplicationResponse resp = EntityDtoMapper.toApplicationResponse(app, pred);
+        resp.setRecommendations(recommendationService.buildRecommendations(app));
+        return resp;
     }
 }

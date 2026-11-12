@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -32,4 +33,15 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
 
     @Query("SELECT a.cycle, a.finalStatus, COUNT(a) FROM Application a GROUP BY a.cycle, a.finalStatus ORDER BY a.cycle ASC, a.finalStatus ASC")
     List<Object[]> countGroupedByCycleAndFinalStatus();
+
+    @Query("""
+            SELECT AVG(s.cgpa), AVG(s.aptitudeScorePre), AVG(s.codingScorePre),
+                   AVG(s.communicationScorePre), AVG(s.resumeScore),
+                   AVG(s.projectsCount), AVG(s.internshipsCount), AVG(a.skillMatchRatio)
+            FROM Application a
+            JOIN Student s ON a.studentId = s.studentId
+            JOIN Job j ON a.jobId = j.jobId
+            WHERE a.finalStatus = 1 AND j.jobDomain = :jobDomain
+            """)
+    List<Object[]> findSelectedPeerAveragesByJobDomain(@Param("jobDomain") String jobDomain);
 }

@@ -17,6 +17,7 @@ public class ApplicationResponse {
     private Integer finalStatus;
     private String finalStatusLabel;
     private PredictionResponse latestPrediction;
+    private ApplicationRecommendationResponse recommendations;
 
     public ApplicationResponse() {}
 
@@ -70,4 +71,7 @@ public class ApplicationResponse {
 
     public PredictionResponse getLatestPrediction() { return latestPrediction; }
     public void setLatestPrediction(PredictionResponse latestPrediction) { this.latestPrediction = latestPrediction; }
+
+    public ApplicationRecommendationResponse getRecommendations() { return recommendations; }
+    public void setRecommendations(ApplicationRecommendationResponse recommendations) { this.recommendations = recommendations; }
 }

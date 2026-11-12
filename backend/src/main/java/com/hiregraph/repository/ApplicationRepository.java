@@ -8,12 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
     Optional<Application> findByApplicationId(String applicationId);
+    List<Application> findByApplicationIdIn(Collection<String> applicationIds);
     boolean existsByApplicationId(String applicationId);
 
     List<Application> findByStudentId(String studentId);

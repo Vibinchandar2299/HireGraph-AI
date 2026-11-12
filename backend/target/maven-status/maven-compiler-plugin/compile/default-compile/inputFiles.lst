@@ -14,6 +14,7 @@ C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\c
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\controller\SkillController.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\dto\request\BatchPredictionRequest.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\dto\request\PredictionRequest.java
+C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\dto\response\ApplicationRecommendationResponse.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\dto\response\ApplicationResponse.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\dto\response\BatchPredictionResponse.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\dto\response\CandidateResponse.java
@@ -57,6 +58,7 @@ C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\r
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\repository\StudentRepository.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\repository\StudentSkillRepository.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\service\AnalyticsService.java
+C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\service\ApplicationRecommendationService.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\service\ApplicationService.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\service\CandidateService.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\service\CompanyService.java
@@ -67,3 +69,4 @@ C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\s
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\service\ModelService.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\service\PredictionService.java
 C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\service\SkillService.java
+C:\Users\VIBIN\Vibin Projects\HireGraph AI\backend\src\main\java\com\hiregraph\util\SkillCatalog.java

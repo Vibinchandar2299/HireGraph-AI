@@ -9,6 +9,7 @@ public class SubgraphResponse {
     private int linksCount;
     private List<Map<String, Object>> nodes;
     private List<Map<String, Object>> links;
+    private Map<String, Object> summary;
 
     public SubgraphResponse() {}
 
@@ -19,6 +20,13 @@ public class SubgraphResponse {
         this.linksCount = linksCount;
         this.nodes = nodes;
         this.links = links;
+    }
+
+    public SubgraphResponse(Map<String, Object> centerNode, int nodesCount, int linksCount,
+                            List<Map<String, Object>> nodes, List<Map<String, Object>> links,
+                            Map<String, Object> summary) {
+        this(centerNode, nodesCount, linksCount, nodes, links);
+        this.summary = summary;
     }
 
     public Map<String, Object> getCenterNode() { return centerNode; }
@@ -35,4 +43,7 @@ public class SubgraphResponse {
 
     public List<Map<String, Object>> getLinks() { return links; }
     public void setLinks(List<Map<String, Object>> links) { this.links = links; }
+
+    public Map<String, Object> getSummary() { return summary; }
+    public void setSummary(Map<String, Object> summary) { this.summary = summary; }
 }
